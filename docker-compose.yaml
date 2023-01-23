@@ -1,0 +1,23 @@
+services:
+  mysql-server:
+    build: ./mysql_init
+    ports:
+      - 3306:3306
+    container_name: mysql_container
+    volumes:
+      - mysql-server_db:/var/lib/mysql
+  
+  # flask-server:
+  #   build: ./
+  #   restart: always
+  #   command: python3 ./app.py;
+  #   depends_on:
+  #     - mysql-server
+  #   ports:
+  #     - 5555:5555
+  #   container_name: flask_container
+
+volumes:
+  mysql-server_db:
+    driver: local
+
