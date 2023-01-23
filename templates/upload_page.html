@@ -16,10 +16,11 @@
             </form>
         </div>
         <div class="files-section">
-            {% for file in files %}
-                <a href="">
-                    <img src="{{ url_for('display_files', filename=file) }}">
-                </a>
+            {% for video in videos %}
+                <!-- <a href="">
+                    <img src="{{ url_for('display_files', filename=video) }}">
+                </a> -->
+                <video src="{{ url_for('display_files', filename=video) }}" controls preload="preload"></video>
             {% endfor %}
         </div>
     </div>

@@ -43,26 +43,26 @@
     align-content: flex-start;
     flex-wrap: wrap;
     display: flex;
+    overflow-x: auto;
     overflow-y: auto;
   }
   
-  .files-section a {
+  /* .files-section a {
     margin: 0 15px 15px 0;
     padding-bottom: 20%;
     content: '';
     width: calc(33.33% - 15px);
     height: 0;
     display: block;
-  }
+  } */
   
-  .files-section img {
-    position: absolute;
+  .files-section video {
+    position: relative;
     top: 0;
-    width: 100%;
-    height: 100%;
+    height: 300px;
+    width: auto;
     border-radius: 4px;
-    /* object-fit originally set to cover */
-    object-fit: unset; 
+    object-fit: cover;
     display: block;
   }
   
