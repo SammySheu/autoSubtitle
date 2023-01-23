@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Upload</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div class="app">
@@ -14,8 +15,12 @@
                 <input type="submit" value="Upload">
             </form>
         </div>
-        <div class="file-section">
-
+        <div class="files-section">
+            {% for file in files %}
+                <a href="">
+                    <img src="{{ url_for('display_files', filename=file) }}">
+                </a>
+            {% endfor %}
         </div>
     </div>
 </body>
