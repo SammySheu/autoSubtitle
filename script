@@ -1,0 +1,4 @@
+autosub -S zh-TW -D zh-TW -o ./srt_file/test.srt etkl8-wo7lj.mp4
+/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf, 0, DejaVuSans
+ffmpeg -i etkl8-wo7lj.mp4 -vf 'subtitles=./srt_file/test.srt' ./uploads/output.mp4
+install -m 644 PingFang.ttc /usr/share/fonts/truetype/
