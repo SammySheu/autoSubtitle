@@ -20,7 +20,12 @@
                 <!-- <a href="">
                     <img src="{{ url_for('display_files', filename=video) }}">
                 </a> -->
-                <video src="{{ url_for('display_files', filename=video) }}" controls preload="preload"></video>
+                <div class="single-video">
+                    <video src="{{ url_for('display_files', filename=video) }}" controls preload="preload"></video>
+                    <form action="/add-subtitles" method="POST">
+                        <input type="submit" name="generate-subtitles" value="Add Subtitles">
+                    </form>
+                </div>
             {% endfor %}
         </div>
     </div>

@@ -38,6 +38,13 @@ def upload():
 @app.route('/serve-file/<filename>', methods=['GET'])
 def display_files(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
- 
+
+@app.route('/add-subtitles', methods=['POST'])
+def add_subtitles():
+    video_name = '2023-01-26_00:49:17_etkl8-wo7lj'
+    os.system(f'autosub -S zh-TW -D zh-TW -o ./srt_file/test.srt ./uploads/{video_name}.mp4')
+    os.system(f"ffmpeg -i ./uploads/{video_name}.mp4 -vf 'subtitles=./srt_file/test.srt' ./uploads/outputWithSubtitle.mp4")
+    return 'Successfully add subtitles'
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(debug=True)
+    # app.run(host='0.0.0.0', debug=True)
