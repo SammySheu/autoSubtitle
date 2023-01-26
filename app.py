@@ -21,6 +21,18 @@ def index():
     print(videos)
     return render_template('upload_page.html', videos = videos)
 
+@app.route('/register', methods=['POST'])
+def register():
+    user = User(   
+        user_email = request.form['email'],
+        user_password = request.form['password'],
+    )
+    searchEmail = User.query.filter_by(user_email=request.form['email']).first()
+    if not searchEmail:                     # if email doesn't exist, build one
+        addUser(app, user)
+        return 'Register successfully'
+    else:
+        return 'Email already exists'
 
 @app.route('/upload-video', methods=['POST'])
 def upload():
