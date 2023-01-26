@@ -13,6 +13,7 @@ CREATE TABLE video(
     video_name varchar(50) NOT NULL,
     video_url varchar(150) NOT NULL,
     video_owner INT NOT NULL,
+    srt_url varchar(150),
     video_is_private boolean NOT NULL,
     date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
