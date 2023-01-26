@@ -1,14 +1,23 @@
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, jsonify
 from werkzeug.utils import secure_filename
-from datetime import datetime
+import datetime
 import os
 from mysql_init.mysql_config import setUpDB, addUser, addVideo
+from flask_jwt_extended import (
+    JWTManager,
+    jwt_required,
+    create_access_token,
+    get_jwt_identity
+)
+import json
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 app.config['MAX_CONTENT_LENGTH'] = 512 * 1024 * 1024     # 512 MB
 app.config['ALLOWED_EXTENSIONS'] = ['.mp4']
+app.config['JWT_SECRET_KEY'] = 'secret'
 
+jwt = JWTManager(app)
 User, Video = setUpDB(app)
 
 @app.route('/', methods=['GET'])
@@ -34,6 +43,22 @@ def register():
     else:
         return 'Email already exists'
 
+@app.route('/login', methods=['POST'])   
+def loginPost():
+    searchData = User.query.filter_by(user_email=request.form['email']).first()
+    if searchData:
+        if searchData.user_password == request.form['password']:
+            currentUser = {
+                'user_email':searchData.user_email,
+                'user_password':searchData.user_password
+            }
+            access_token = create_access_token(identity=json.dumps(currentUser), expires_delta=datetime.timedelta(minutes=15))
+            return jsonify(access_token=access_token), 201
+        else:
+            return 'Incorrect password\n', 200
+    else:
+        return 'No such user was found\n', 200
+
 @app.route('/upload-video', methods=['POST'])
 def upload():
     file = request.files['file_from_user']
@@ -41,7 +66,7 @@ def upload():
     if file:                # Make sure there is file included in request.file
         extension = file.filename.split('.')[1]
         if extension == 'mp4':
-            time_now = datetime.now().strftime('%Y-%m-%d_%H:%M:%S_')
+            time_now = datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S_')
             file_name = secure_filename(file.filename)
             rel_path = os.path.join(
                 app.config['UPLOAD_FOLDER'],

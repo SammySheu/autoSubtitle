@@ -1,10 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
-import os
+# import os
 # from dotenv import load_dotenv
 # load_dotenv()
-from flask_login import UserMixin
-from flask import Flask
-from sqlalchemy import create_engine
 
 
 db = SQLAlchemy()
