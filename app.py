@@ -19,6 +19,8 @@ app.config['MAX_CONTENT_LENGTH'] = 512 * 1024 * 1024     # 512 MB
 app.config['ALLOWED_EXTENSIONS'] = ['.mp4']
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config['JWT_SECRET_KEY'] = 'secret'
+app.config["JWT_COOKIE_SECURE"] = False
+
 
 jwt = JWTManager(app)
 User, Video = setUpDB(app)
@@ -26,7 +28,6 @@ User, Video = setUpDB(app)
 @app.route('/', methods=['GET'])
 @jwt_required()
 def index():
-    print(request.cookies.get('access_token'))
     files = os.listdir(app.config['UPLOAD_FOLDER'])
     videos = []
     for file in files:
@@ -74,6 +75,7 @@ def loginPost():
         return jsonify(msg = 'No such user was found\n'), 200
 
 @app.route('/upload-video', methods=['POST'])
+@jwt_required()
 def upload():
     file = request.files['file_from_user']
     
@@ -87,14 +89,18 @@ def upload():
                 time_now + file_name
             )
             abs_path = os.path.join(os.getcwd() ,rel_path)
+            jwt_certificated_data = get_jwt_identity()
+            jwt_certificated_data = json.loads(jwt_certificated_data)
+            print(jwt_certificated_data)
+            userInfo = User.query.filter_by(user_email=jwt_certificated_data['user_email']).first()
             file.save(rel_path)
             video = Video(
                 video_name  = file_name,
                 video_url   = abs_path,
-                video_owner = 3,
+                video_owner = userInfo.user_id,
             )
             addVideo(app, video)
-            return 'Upload successfully'
+            return jsonify(msg = 'Upload successfully\n'), 200
         else:
             return 'Only mp4 file is available'
     return 'There is no any files'
