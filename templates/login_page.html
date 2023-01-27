@@ -7,7 +7,7 @@
     <title>Login</title>
 </head>
 <body>
-    <form id="form-section" method="POST">
+    <form id="form-section">
         <p>Email:</p>
         <input type="email" name="user_email" required> 
         <p>Password:</p>
@@ -29,10 +29,10 @@
                 })
             });
             const result = await response.json();
-            // console.log(result.access_token)
+            console.log(document.cookie)
 
-            if( result.access_token ){
-                document.cookie = `access_token_cookie=${result.access_token}`
+            if( result.msg === 'login successful' ){
+                // document.cookie = `access_token_cookie=${result.access_token}`
                 // localStorage.setItem('jwt', result.access_token);
                 location.assign('http://127.0.0.1:5555/')
             }
@@ -40,7 +40,6 @@
                 console.log(result.msg)
                 location.reload()
             }
-
         }
     </script>
 </body>

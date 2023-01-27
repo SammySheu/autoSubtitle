@@ -7,7 +7,9 @@ from flask_jwt_extended import (
     JWTManager,
     jwt_required,
     create_access_token,
-    get_jwt_identity
+    get_jwt_identity,
+    unset_jwt_cookies,
+    set_access_cookies
 )
 import json
 
@@ -62,8 +64,10 @@ def loginPost():
                 'user_email':searchData.user_email,
                 # 'user_password':searchData.user_password
             }
+            response = jsonify({"msg": "login successful"})
             access_token = create_access_token(identity=json.dumps(currentUser), expires_delta=datetime.timedelta(minutes=15))
-            return jsonify(access_token = access_token), 201
+            set_access_cookies(response, access_token)
+            return response
         else:
             return jsonify(msg = 'Incorrect password\n'), 200
     else:
@@ -105,6 +109,13 @@ def add_subtitles():
     os.system(f'autosub -S zh-TW -D zh-TW -o ./srt_file/test.srt ./uploads/{video_name}.mp4')
     os.system(f"ffmpeg -i ./uploads/{video_name}.mp4 -vf 'subtitles=./srt_file/test.srt' ./uploads/outputWithSubtitle.mp4")
     return 'Successfully add subtitles'
+
+@app.route("/logout", methods=["POST"])
+def logout_with_cookies():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
+
 if __name__ == "__main__":
     # app.run(debug=True)
     app.run(host='0.0.0.0',port=5555, debug=True)
