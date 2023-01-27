@@ -15,13 +15,16 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 app.config['MAX_CONTENT_LENGTH'] = 512 * 1024 * 1024     # 512 MB
 app.config['ALLOWED_EXTENSIONS'] = ['.mp4']
+app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config['JWT_SECRET_KEY'] = 'secret'
 
 jwt = JWTManager(app)
 User, Video = setUpDB(app)
 
 @app.route('/', methods=['GET'])
+@jwt_required()
 def index():
+    print(request.cookies.get('access_token'))
     files = os.listdir(app.config['UPLOAD_FOLDER'])
     videos = []
     for file in files:
