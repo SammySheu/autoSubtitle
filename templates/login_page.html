@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <form id="form-section" method="POST">
+        <p>Email:</p>
+        <input type="email" name="user_email" required> 
+        <p>Password:</p>
+        <input type="password" name="user_password" required>
+        <button type="button" id="submitBtn">Login</button>
+    </form>
+    <script>
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.addEventListener('click', login)
+        async function login() {
+            user_email = document.querySelector("#form-section > input[type=email]:nth-child(2)").value
+            user_password = document.querySelector("#form-section > input[type=password]:nth-child(4)").value
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_email,
+                    user_password
+                })
+            });
+            const result = await response.json();
+            console.log(result.access_token)
+            if(result.access_token != undefined){
+                localStorage.setItem('jwt', result.access_token);
+                window.location.assign('http://127.0.0.1:5555')
+            }
+            else {
+                console.log(result.msg)
+                location.reload()
+            }
+
+        }
+    </script>
+</body>
+</html>

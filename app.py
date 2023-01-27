@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_from_directory, jsonify
+from flask import Flask, render_template, request, send_from_directory, jsonify, redirect
 from werkzeug.utils import secure_filename
 import datetime
 import os
@@ -43,21 +43,28 @@ def register():
     else:
         return 'Email already exists'
 
+@app.route('/login', methods=['GET'])
+def loginGet():
+    return render_template('login_page.html')
+
 @app.route('/login', methods=['POST'])   
 def loginPost():
-    searchData = User.query.filter_by(user_email=request.form['email']).first()
+    data = request.get_json()
+    if (not data['user_email']) or (not data['user_password']):
+        return jsonify(msg = 'Missing information')
+    searchData = User.query.filter_by(user_email=data['user_email']).first()
     if searchData:
-        if searchData.user_password == request.form['password']:
+        if searchData.user_password == data['user_password']:
             currentUser = {
                 'user_email':searchData.user_email,
-                'user_password':searchData.user_password
+                # 'user_password':searchData.user_password
             }
             access_token = create_access_token(identity=json.dumps(currentUser), expires_delta=datetime.timedelta(minutes=15))
-            return jsonify(access_token=access_token), 201
+            return jsonify(access_token = access_token), 201
         else:
-            return 'Incorrect password\n', 200
+            return jsonify(msg = 'Incorrect password\n'), 200
     else:
-        return 'No such user was found\n', 200
+        return jsonify(msg = 'No such user was found\n'), 200
 
 @app.route('/upload-video', methods=['POST'])
 def upload():
