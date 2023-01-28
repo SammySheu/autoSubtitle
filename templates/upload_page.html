@@ -22,7 +22,7 @@
                 </a> -->
                 <div class="single-video">
                     <video src="{{ url_for('display_files', filename=video) }}" controls preload="preload"></video>
-                    <form action="/add-subtitles" method="POST">
+                    <form action="/add-subtitles" class="user-video" method="POST">
                         <input type="submit" name="generate-subtitles" value="Add Subtitles">
                     </form>
                 </div>

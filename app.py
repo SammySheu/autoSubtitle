@@ -28,12 +28,20 @@ User, Video = setUpDB(app)
 @app.route('/', methods=['GET'])
 @jwt_required()
 def index():
-    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    jwt_certificated_data = get_jwt_identity()
+    jwt_certificated_data = json.loads(jwt_certificated_data)
+    userVideos = Video.query.filter_by(video_owner=jwt_certificated_data['user_id'])
     videos = []
-    for file in files:
-        if os.path.splitext(file)[1] in app.config['ALLOWED_EXTENSIONS']:
-            videos.append(file)
-    print(videos)
+    for row in userVideos:
+        print(row.video_name)
+        videos.append(row.video_name)
+    # files = os.listdir(app.config['UPLOAD_FOLDER'])
+    # videos = []
+    # for file in files:
+    #     if os.path.splitext(file)[1] in app.config['ALLOWED_EXTENSIONS']:
+    #         videos.append(file)
+
+    # print(videos)
     return render_template('upload_page.html', videos = videos)
 
 @app.route('/register', methods=['POST'])
@@ -62,7 +70,8 @@ def loginPost():
     if searchData:
         if searchData.user_password == data['user_password']:
             currentUser = {
-                'user_email':searchData.user_email,
+                'user_id': searchData.user_id
+                # 'user_email':searchData.user_email,
                 # 'user_password':searchData.user_password
             }
             response = jsonify({"msg": "login successful"})
@@ -83,21 +92,21 @@ def upload():
         extension = file.filename.split('.')[1]
         if extension == 'mp4':
             time_now = datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S_')
-            file_name = secure_filename(file.filename)
+            file_name = time_now + secure_filename(file.filename)
             rel_path = os.path.join(
                 app.config['UPLOAD_FOLDER'],
-                time_now + file_name
+                file_name
             )
             abs_path = os.path.join(os.getcwd() ,rel_path)
             jwt_certificated_data = get_jwt_identity()
             jwt_certificated_data = json.loads(jwt_certificated_data)
-            print(jwt_certificated_data)
-            userInfo = User.query.filter_by(user_email=jwt_certificated_data['user_email']).first()
+            # print(jwt_certificated_data)
+            # userInfo = User.query.filter_by(user_id=jwt_certificated_data['user_email']).first()
             file.save(rel_path)
             video = Video(
                 video_name  = file_name,
                 video_url   = abs_path,
-                video_owner = userInfo.user_id,
+                video_owner = jwt_certificated_data['user_id']
             )
             addVideo(app, video)
             return jsonify(msg = 'Upload successfully\n'), 200
@@ -110,6 +119,7 @@ def display_files(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 @app.route('/add-subtitles', methods=['POST'])
+@jwt_required()
 def add_subtitles():
     video_name = '2023-01-26_00:49:17_etkl8-wo7lj'
     os.system(f'autosub -S zh-TW -D zh-TW -o ./srt_file/test.srt ./uploads/{video_name}.mp4')
@@ -117,6 +127,7 @@ def add_subtitles():
     return 'Successfully add subtitles'
 
 @app.route("/logout", methods=["POST"])
+# @jwt_required()
 def logout_with_cookies():
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
