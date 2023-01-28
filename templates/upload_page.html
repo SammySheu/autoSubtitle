@@ -15,7 +15,7 @@
                 <input type="submit" value="Upload">
             </form>
         </div>
-        <div class="files-section">
+        <div class="files-section" id="files-section">
             {% for video in videos %}
                 <!-- <a href="">
                     <img src="{{ url_for('display_files', filename=video) }}">
@@ -33,33 +33,48 @@
         </form>
     </div>
     <script>
-        const fileSection = document.getElementById('form-section')
-        fileSection.addEventListener('submit', upload)
+        const formSection = document.getElementById('form-section')
+        formSection.addEventListener('submit', upload)
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            console.log(value)
+            const parts = value.split(`; ${name}=`);
+            console.log(parts)
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        const fetchOptions = (argPutInBody) => {
+            return {
+                method: 'post',
+                credentials: 'same-origin',
+                headers: {
+                    'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+                },
+            body: argPutInBody,
+            }
+        }
         async function upload(e){
             e.preventDefault();
             console.log()
             const userFile = document.getElementById('file').files[0];
             const formData = new FormData();
             formData.append('file_from_user', userFile)
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                console.log(value)
-                const parts = value.split(`; ${name}=`);
-                console.log(parts)
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }
-            const options = {
-                method: 'post',
-                credentials: 'same-origin',
-                headers: {
-                    'X-CSRF-TOKEN': getCookie('csrf_access_token'),
-                },
-                body: formData,
-            }
-            const response = await fetch('http://127.0.0.1:5555/upload-video', options);
+            const response = await fetch('http://127.0.0.1:5555/upload-video', fetchOptions(formData));
             const result = await response.json();
             location.reload()
             return result;
+        }
+        const fileSection = document.getElementById('files-section')
+        fileSection.addEventListener('submit', addSubtitle)
+        async function addSubtitle(e){
+            e.preventDefault();
+            videoName = e.target.parentNode.querySelector('video').src
+            video_name = videoName.slice(33).split('.mp4')[0]
+            console.log(video_name)
+            const response = await fetch('http://127.0.0.1:5555/add-subtitles', fetchOptions(JSON.stringify(video_name)));
+            const result = await response.json();
+            location.reload()
+            return result;
+            
         }
     </script>
 </body>

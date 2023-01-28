@@ -91,7 +91,7 @@ def upload():
     if file:                # Make sure there is file included in request.file
         extension = file.filename.split('.')[1]
         if extension == 'mp4':
-            time_now = datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S_')
+            time_now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S_')
             file_name = time_now + secure_filename(file.filename)
             rel_path = os.path.join(
                 app.config['UPLOAD_FOLDER'],
@@ -121,10 +121,11 @@ def display_files(filename):
 @app.route('/add-subtitles', methods=['POST'])
 @jwt_required()
 def add_subtitles():
-    video_name = '2023-01-26_00:49:17_etkl8-wo7lj'
-    os.system(f'autosub -S zh-TW -D zh-TW -o ./srt_file/test.srt ./uploads/{video_name}.mp4')
-    os.system(f"ffmpeg -i ./uploads/{video_name}.mp4 -vf 'subtitles=./srt_file/test.srt' ./uploads/outputWithSubtitle.mp4")
-    return 'Successfully add subtitles'
+    print(json.loads(request.data))
+    video_name = json.loads(request.data)
+    os.system(f'autosub -S zh-TW -D zh-TW -o ./srt_file/{video_name}.srt ./uploads/{video_name}.mp4')
+    os.system(f"ffmpeg -i ./uploads/{video_name}.mp4 -vf 'subtitles=./srt_file/{video_name}.srt' ./uploads/{video_name}_srt.mp4")
+    return jsonify(msg = 'Successfully add subtitles')
 
 @app.route("/logout", methods=["POST"])
 # @jwt_required()
