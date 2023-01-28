@@ -44,6 +44,16 @@ def index():
     # print(videos)
     return render_template('upload_page.html', videos = videos)
 
+@app.route('/finishPage', methods=['GET'])
+def showcase():
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    videos = []
+    for file in files:
+        print(os.path.splitext(file)[0][-4:])
+        if os.path.splitext(file)[0][-4:] == '_srt':
+            videos.append(file)
+    return render_template('upload_page.html', videos = videos)
+
 @app.route('/register', methods=['POST'])
 def register():
     user = User(   
