@@ -137,6 +137,35 @@ def add_subtitles():
     os.system(f"ffmpeg -i ./uploads/{video_name}.mp4 -vf 'subtitles=./srt_file/{video_name}.srt' ./uploads/{video_name}_srt.mp4")
     return jsonify(msg = 'Successfully add subtitles')
 
+@app.route('/edit-subtitles/<videoName>', methods=['GET'])
+def edit_subtitles(videoName):
+    with open(f'./srt_file/{videoName}.srt', 'r', encoding='UTF-8') as f:
+        lines = []
+        videoName='2023-01-28_19-01-27_tg67a-8mixy.mp4'
+        while True:
+            line = []
+            [line.append(f.readline().strip()) for i in range(3)]
+            lines.append(line)
+            if not f.readline():
+                break
+    return render_template('edit_subtitles.html', lines = lines, video = videoName)
+
+@app.route('/update-subtitles', methods=['POST'])
+def update_subtitles():
+    with open('./srt_file/2023-01-28_19-01-27_tg67a-8mixy.srt', 'r') as f:
+        content = f.readlines()
+        index = 1
+        for i in range(2, len(content), 4):
+            content[i] = f'{request.form[str(index)]}\n'
+            index += 1
+    content = ''.join(content)
+    with open('./srt_file/2023-01-28_19-01-27_tg67a-8mixy.srt', 'w') as f:
+        f.write(content)
+    # for line in request.form.values():
+    #     print(line)        
+    
+    return jsonify('Update subtitles successfully')
+
 @app.route("/logout", methods=["POST"])
 # @jwt_required()
 def logout_with_cookies():
