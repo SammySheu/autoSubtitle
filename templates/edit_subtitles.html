@@ -9,9 +9,12 @@
 </head>
 <body>
     <div class="video-section">
-        <video src="{{ url_for('display_files', filename=video) }}" controls preload="preload" ></video>
+        {% set filePath = videoPath.split('/') %}
+        {% set fileDirectory = filePath[0] %}
+        {% set fileName = filePath[1] %}
+        <video src="{{ url_for('display_files', fileDirectory=fileDirectory, fileName=fileName) }}" controls preload="preload"></video>
     </div>
-    <form id="form" action="/update-subtitles", method="POST">
+    <form id="form" action="/workshop/update-subtitles", method="POST">
         {% for line in lines %}
         <div class="line-card">
             <p>
@@ -28,6 +31,16 @@
     <script>
         const formNode = document.getElementById('form')
         formNode.addEventListener('submit', updateSubtitle)
+        
+        async function updateSubtitle(e){
+            e.preventDefault();
+            const videoNode = document.querySelector("body > div > video").src
+            const videoPath = videoNode.slice(33)
+            const formData = new FormData(formNode)
+            formData.append('video_path', videoPath)
+            await fetch('/workshop/update-subtitles', fetchOptions(formData))
+            return location.assign('http://127.0.0.1:5555/workshop')
+        }
         const fetchOptions = (argPutInBody) => {
             return {
                 method: 'post',
@@ -37,12 +50,6 @@
                 // },
             body: argPutInBody,
             }
-        }
-        async function updateSubtitle(e){
-            e.preventDefault();
-            const formData = new FormData(formNode)
-            await fetch('/update-subtitles', fetchOptions(formData))
-            location.assign('http://127.0.0.1:5555/finishPage')
         }
     </script>
 </body>
