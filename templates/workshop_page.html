@@ -18,24 +18,31 @@
         <div class="files-section" id="unsubtitle-section">
             <h3 style="margin: 1rem auto;">Un-subtitled File</h3>
             {% for user_video in user_videos %}
-                {% set filePath = user_video.split('/') %}
+                {% set filePath = user_video[0].split('/') %}
                 {% set fileDirectory = filePath[0] %}
                 {% set fileName = filePath[1] %}
+                {% set srtExist = user_video[1] %}
                 <div class="single-video">
                     <video src="{{ url_for('display_files', fileDirectory=fileDirectory, fileName=fileName) }}" controls preload="preload"></video>
-                    <form action="{{ url_for('workshop.add_subtitles') }}" class="add-button" method="POST">
-                        <input type="submit" name="generate-subtitles" value="Add Subtitles">
-                    </form>
-                    <form action="{{ url_for('workshop.merge_subtitles') }}" class="merge-button" id="mergeButton" method="POST">
-                        <input type="submit" name="merge-subtitles" value="Merge Subtitles">
-                    </form>
+                    {% if srtExist %}
+                        <form action="{{ url_for('workshop.add_subtitles') }}" class="add-button" method="POST">
+                            <input type="submit" name="generate-subtitles" value="Edit Subtitles">
+                        </form>
+                        <form action="{{ url_for('workshop.merge_subtitles') }}" class="merge-button" id="mergeButton" method="POST">
+                            <input type="submit" name="merge-subtitles" value="Merge Subtitles">
+                        </form>    
+                    {% else %}
+                        <form action="{{ url_for('workshop.add_subtitles') }}" class="add-button" method="POST">
+                            <input type="submit" name="generate-subtitles" value="Create Subtitles">
+                        </form>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
         <div class="files-section" id="subtitle-section">
             <h3 style="margin: 1rem auto;">Subtitled File</h3>
             {% for workshop_video in workshop_videos %}
-                {% set filePath1 = workshop_video.split('/') %}
+                {% set filePath1 = workshop_video[0].split('/') %}
                 {% set fileDirectory1 = filePath1[0] %}
                 {% set fileName1 = filePath1[1] %}
                 <div class="single-video">
@@ -58,7 +65,7 @@
         uploadSection.addEventListener('submit', upload)
         
         const unsubSection = document.getElementById('unsubtitle-section')
-        unsubSection.addEventListener('submit', addSubtitle)
+        unsubSection.addEventListener('submit', createSubtitle)
         unsubSection.addEventListener('submit', mergeSubtitle)
         
         const subSection = document.getElementById('subtitle-section')
@@ -80,9 +87,8 @@
 
         }
 
-        async function addSubtitle(e){
+        async function createSubtitle(e){
             e.preventDefault();
-            console.log(e.target.className)
             if (e.target.className == 'merge-button')
                 return ;
             videoName = e.target.parentNode.querySelector('video').src

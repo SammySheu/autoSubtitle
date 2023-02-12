@@ -5,9 +5,9 @@ from controllers.workshop import workshop
 
 app.config['USER_FOLDER'] = 'userFiles/'
 app.config['SRT_FOLDER'] = 'srtFiles/'
-app.config['WORKSHOP_FOLDER'] = '../workshopFiles/'
+app.config['WORKSHOP_FOLDER'] = 'workshopFiles/'
 app.config['ROOT_FOLDER'] = '../'
-app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024     # 1 GB
+app.config['MAX_CONTENT_LENGTH'] = 512 * 1024 * 1024     # 512 MB
 app.config['ALLOWED_EXTENSIONS'] = ['.mp4']
 
 @app.route('/')
@@ -23,5 +23,5 @@ def display_files(fileDirectory, fileName):
     return send_from_directory( f'../{fileDirectory}', fileName, as_attachment=True)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',debug=True, port = 5555)
+    app.run(debug=True, port = 5555)
     # app.run(host='0.0.0.0',port=5555, debug=True)

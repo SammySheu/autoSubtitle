@@ -32,12 +32,12 @@ MarkupSafe
 mistune
 mysql-connector
 mysql-connector-python
-mysqlclient
 numpy
 pandas
 progressbar
 progressbar2
 protobuf
+psycopg2
 psycopg2-binary
 pyasn1
 pyasn1-modules
