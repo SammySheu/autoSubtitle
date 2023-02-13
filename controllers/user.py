@@ -12,7 +12,7 @@ user = Blueprint('user', __name__)
 
 @user.route('/register', methods = ['GET'])
 def registerGet():
-    return render_template('register_page.html')
+    return render_template('register_page.html', msg = request.args.get('msg'))
 
 @user.route('/register', methods=['POST'])
 def registerPost():
@@ -23,9 +23,9 @@ def registerPost():
             user_password = request.form['password'],
         )
         addUser(user)
-        return jsonify('Register successfully')
+        return jsonify(msg = 'Register successfully'), 200
     else:
-        return jsonify('Email already exists')
+        return jsonify(msg = 'Email already exists'), 200
 
 @user.route('/login', methods=['GET'])
 def loginGet():
