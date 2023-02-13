@@ -8,13 +8,17 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 user = 'developer'
-password = 'c5nYkAWbgZmrBEXkk8EJe5nRiapVBV9d'
-host = 'dpg-cfkahpda49903fn1jl5g-a.ohio-postgres.render.com'
-port = '5432'
-database = 'maindb_t4vn'
+password = 'password'
+host = 'mysql-server'
+port = '3306'
+database = 'maindb'
+# password = 'c5nYkAWbgZmrBEXkk8EJe5nRiapVBV9d'
+# host = 'dpg-cfkahpda49903fn1jl5g-a.ohio-postgres.render.com'
+# port = '5432'
+# database = 'maindb_t4vn'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{user}:{password}@{host}:{port}/{database}'
-# app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{user}:{password}@{host}:{port}/{database}'
+# app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{user}:{password}@{host}:{port}/{database}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{user}:{password}@{host}:{port}/{database}'
 app.config['SECRET_KEY']= 'mySecretKey'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation warning
 
@@ -22,13 +26,13 @@ db.init_app(app)
 
 
 class User(db.Model):
-    __tablename__ = "users" # table name in the database
+    # __tablename__ = "users" # table name in the database
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_email = db.Column(db.String(100), unique=True, nullable=False)
     user_password = db.Column(db.String(150), nullable=False)
 
 class Video(db.Model):
-    __tablename__ = "videos" # table name in the database
+    # __tablename__ = "videos" # table name in the database
     video_id    = db.Column(db.Integer, primary_key=True, autoincrement=True)
     video_name  = db.Column(db.String(100), unique=True, nullable=False)
     video_url   = db.Column(db.String(150), unique=True, nullable=False)

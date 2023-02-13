@@ -16,32 +16,6 @@ def registerGet():
 
 @user.route('/register', methods=['POST'])
 def registerPost():
-<<<<<<< HEAD
-    try:
-        searchEmail = User.query.filter(User.user_email == request.form['email']).first()
-        if not searchEmail:             # if email doesn't exist, build one
-            user = User(   
-                user_email = request.form['email'],
-                user_password = request.form['password'],
-            )
-            addUser(user)
-            return jsonify('Register successfully')
-        else:
-            return jsonify('Email already exists')
-    except:
-        return jsonify('Maybe you should refresh page')
-||||||| bab4d47
-    searchEmail = User.query.filter_by(user_email=request.form['email']).first()
-    if not searchEmail:             # if email doesn't exist, build one
-        user = User(   
-            user_email = request.form['email'],
-            user_password = request.form['password'],
-        )
-        addUser(user)
-        return jsonify('Register successfully')
-    else:
-        return jsonify('Email already exists')
-=======
     searchEmail = User.query.filter_by(user_email=request.form['email']).first()
     if not searchEmail:             # if email doesn't exist, build one
         user = User(   
@@ -52,7 +26,6 @@ def registerPost():
         return jsonify(msg = 'Register successfully'), 200
     else:
         return jsonify(msg = 'Email already exists'), 200
->>>>>>> backup
 
 @user.route('/login', methods=['GET'])
 def loginGet():
