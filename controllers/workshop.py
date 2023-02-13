@@ -16,16 +16,19 @@ workshop = Blueprint('workshop', __name__)
 @workshop.route('/', methods=['GET'])
 @jwt_required()
 def workshopGet():
-    payload = get_jwt_identity()
-    dbVideos = Video.query.filter_by(video_owner=payload['user_id'])
-    workshopVideos = []
-    userVideos = []
-    for row in dbVideos:
-        if row.is_converted:
-            workshopVideos.append( row.video_url )
-        else: 
-            userVideos.append( row.video_url )    
-    return render_template('workshop_page.html', user_videos = userVideos, workshop_videos = workshopVideos)
+    try:
+        payload = get_jwt_identity()
+        dbVideos = Video.query.filter(Video.video_owner == payload['user_id'])
+        workshopVideos = []
+        userVideos = []
+        for row in dbVideos:
+            if row.is_converted:
+                workshopVideos.append( [row.video_url, row.srt_url] )
+            else:
+                userVideos.append( [row.video_url, row.srt_url] )
+        return render_template('workshop_page.html', user_videos = userVideos, workshop_videos = workshopVideos)
+    except:
+        return jsonify('Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
 
 
 @workshop.route('/upload-video', methods=['POST'])
