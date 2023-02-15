@@ -31,9 +31,9 @@
             const response = await fetch('/user/register', fetchOptions(formData));
             const result = await response.json();
             if( result.msg === 'Register successfully' )
-                return location.assign('http://127.0.0.1:5555/user/login')
+                return location.assign('http://3.230.0.70:5555/user/login')
             else
-                return location.href = `http://127.0.0.1:5555/user/register?msg=${result.msg}`;
+                return location.href = `http://3.230.0.70:5555/user/register?msg=${result.msg}`;
         }
 
         const fetchOptions = (argPutInBody) => {

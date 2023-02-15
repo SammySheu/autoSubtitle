@@ -16,7 +16,8 @@ def registerGet():
 
 @user.route('/register', methods=['POST'])
 def registerPost():
-    searchEmail = User.query.filter_by(user_email=request.form['email']).first()
+    searchEmail = User.query.filter(User.user_email==request.form['email']).first()
+    # searchData = User.query.filter(User.user_email == request.form['user_email']).first()
     if not searchEmail:             # if email doesn't exist, build one
         user = User(   
             user_email = request.form['email'],

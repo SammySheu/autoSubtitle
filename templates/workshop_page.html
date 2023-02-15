@@ -80,7 +80,7 @@
             const userFile = document.getElementById('file').files[0];
             const formData = new FormData();
             formData.append('file_from_user', userFile)
-            const response = await fetch('http://127.0.0.1:5555/workshop/upload-video', fetchOptions(formData));
+            const response = await fetch('http://3.230.0.70:5555/workshop/upload-video', fetchOptions(formData));
             const result = await response.json()
             if(result.msg == 'Upload successfully')
                 return location.reload()
@@ -92,10 +92,10 @@
             if (e.target.className == 'merge-button')
                 return ;
             videoName = e.target.parentNode.querySelector('video').src
-            video_path = videoName.slice(37)
-            const response = await fetch('http://127.0.0.1:5555/workshop/add-subtitles', fetchOptions(JSON.stringify(video_path)));
+            video_path = videoName.slice(34)
+            const response = await fetch('http://3.230.0.70:5555/workshop/add-subtitles', fetchOptions(JSON.stringify(video_path)));
             const result = await response.json()
-            return window.location.href = `http://127.0.0.1:5555/workshop/edit-subtitles/${video_path}`;
+            return window.location.href = `http://3.230.0.70:5555/workshop/edit-subtitles/${video_path}`;
         }
 
         async function mergeSubtitle(e){
@@ -104,10 +104,10 @@
             if (e.target.className == 'add-button' | e.target.className == 'update-button')
                 return ;
             videoName = e.target.parentNode.querySelector('video').src
-            video_path = videoName.slice(37)
-            await fetch('http://127.0.0.1:5555/workshop/merge-subtitles', fetchOptions(JSON.stringify(video_path)));
+            video_path = videoName.slice(34)
+            await fetch('http://3.230.0.70:5555/workshop/merge-subtitles', fetchOptions(JSON.stringify(video_path)));
             // const result = await response.json()
-            return window.location.href = `http://127.0.0.1:5555/workshop`;
+            return window.location.href = `http://3.230.0.70:5555/workshop`;
             // return;
         }
 
@@ -117,16 +117,16 @@
             if (e.target.className == 'merge-button')
                 return ;
             videoName = e.target.parentNode.querySelector('video').src
-            video_path = videoName.slice(37)
-            // const response = await fetch('http://127.0.0.1:5555/workshop/update-subtitles', fetchOptions(JSON.stringify(video_path)));
+            video_path = videoName.slice(34)
+            // const response = await fetch('http://3.230.0.70:5555/workshop/update-subtitles', fetchOptions(JSON.stringify(video_path)));
             // const result = await response.json()
-            return window.location.href = `http://127.0.0.1:5555/workshop/edit-subtitles/${video_path}`;
+            return window.location.href = `http://3.230.0.70:5555/workshop/edit-subtitles/${video_path}`;
         }
 
         async function logout(e){
             e.preventDefault();
-            const response = await fetch('http://127.0.0.1:5555/logout', {method: "POST"});
-            return location.assign('http://127.0.0.1:5555')
+            const response = await fetch('http://3.230.0.70:5555/logout', {method: "POST"});
+            return location.assign('http://3.230.0.70:5555')
         }
 
         function getCookie(name) {
