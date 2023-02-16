@@ -35,11 +35,11 @@
         async function updateSubtitle(e){
             e.preventDefault();
             const videoNode = document.querySelector("body > div > video").src
-            const videoPath = videoNode.slice(34)
+            const videoPath = videoNode.slice(38)
             const formData = new FormData(formNode)
             formData.append('video_path', videoPath)
             await fetch('/workshop/update-subtitles', fetchOptions(formData))
-            return location.assign('http://3.230.0.70:5555/workshop')
+            return location.assign('http://54.226.246.195:5555/workshop')
         }
         const fetchOptions = (argPutInBody) => {
             return {

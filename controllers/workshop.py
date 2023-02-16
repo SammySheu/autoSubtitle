@@ -28,7 +28,7 @@ def workshopGet():
                 userVideos.append( [row.video_url, row.srt_url] )
         return render_template('workshop_page.html', user_videos = userVideos, workshop_videos = workshopVideos)
     except:
-        return jsonify('Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
+        return jsonify(msg = 'Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
 
 
 @workshop.route('/upload-video', methods=['POST'])
@@ -49,7 +49,7 @@ def upload():
         addVideo(video)
         return jsonify(msg = 'Upload successfully'), 200
     except:
-        return jsonify('Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
+        return jsonify(msg = 'Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
 
 @workshop.route('/add-subtitles', methods=['POST'])
 @jwt_required()
@@ -68,7 +68,7 @@ def add_subtitles():
             updateVideo()
         return jsonify(msg)
     except:
-        return jsonify('Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
+        return jsonify(msg = 'Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
 
 @workshop.route('/update-subtitles', methods=['POST'])
 def update_subtitles():
@@ -87,7 +87,7 @@ def update_subtitles():
 
         return jsonify('Update subtitles successfully')
     except:
-        return jsonify('Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
+        return jsonify(msg = 'Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
 @workshop.route('/merge-subtitles', methods=['POST'])
 def merge_subtitles():
     try:
@@ -107,7 +107,7 @@ def merge_subtitles():
         # os.system(f'rm {video_path}')
         return jsonify('Merge Successfully')
     except:
-        return jsonify('Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
+        return jsonify(msg = 'Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
 
 
 @workshop.route('/edit-subtitles/<videoDirectory>/<videoName>', methods=['GET'])
@@ -125,5 +125,5 @@ def edit_subtitles(videoDirectory, videoName):
                     break
         return render_template('edit_subtitles.html', lines = lines, videoPath = videoPath)
     except:
-        return jsonify('Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
+        return jsonify(msg = 'Since free tier of database would shut down every 30 minutes, maybe you should refresh the page')
 

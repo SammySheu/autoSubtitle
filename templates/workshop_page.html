@@ -14,6 +14,11 @@
                 <input type="file" id="file" name="file_from_user" accept="video/mp4" required>
                 <input type="submit" value="Upload">
             </form>
+            <br>
+            <br>
+            <form class="downloadBTN">
+                <input type="submit" name="" value="Download Test File">
+            </form>
         </div>
         <div class="files-section" id="unsubtitle-section">
             <h3 style="margin: 1rem auto;">Un-subtitled File</h3>
@@ -47,11 +52,17 @@
                 {% set fileName1 = filePath1[1] %}
                 <div class="single-video">
                     <video src="{{ url_for('display_files', fileDirectory=fileDirectory1, fileName=fileName1) }}" controls preload="preload"></video>
-                    <form action="{{ url_for('workshop.add_subtitles') }}" class="update-button" method="POST">
+                    <!-- <form action="{{ url_for('workshop.add_subtitles') }}" class="update-button" method="POST">
                         <input type="submit" name="generate-subtitles" value="Update Subtitles">
                     </form>
                     <form action="{{ url_for('workshop.merge_subtitles') }}" class="merge-button" id="mergeButton" method="POST">
                         <input type="submit" name="merge-subtitles" value="Merge Subtitles">
+                    </form> -->
+                    <form class="downloadBTN">
+                        <input type="submit" value="Download Video">
+                    </form>
+                    <form class="downloadBTN">
+                        <input type="submit" value="Download Srt">
                     </form>
                 </div>
             {% endfor %}
@@ -68,19 +79,47 @@
         unsubSection.addEventListener('submit', createSubtitle)
         unsubSection.addEventListener('submit', mergeSubtitle)
         
-        const subSection = document.getElementById('subtitle-section')
-        subSection.addEventListener('submit', updateSubtitle)
-        subSection.addEventListener('submit', mergeSubtitle)
+        // const subSection = document.getElementById('subtitle-section')
+        // subSection.addEventListener('submit', updateSubtitle)
+        // subSection.addEventListener('submit', mergeSubtitle)
 
         const logoutSection = document.getElementById('logout')
         logoutSection.addEventListener('submit', logout)
+
+        const downloadSection = document.querySelectorAll('.downloadBTN')
+        for(let i=0; i < downloadSection.length ; i++){
+            downloadSection[i].addEventListener('submit', download)
+        }
+        // downloadSection.addEventListener('submit', async (e) => {
+        //     e.preventDefault()
+        //     console.log(e.target.value)
+        //     return location.assign('http://54.226.246.195:5555/serve-file/testFile/test_video.mp4')
+        // })
+        
+        async function download(e){
+            e.preventDefault()
+            swither = e.target.querySelector('input').value
+            if(swither == "Download Test File")
+                return location.assign('http://54.226.246.195:5555/serve-file/testFile/test_video.mp4')
+            else if(swither == "Download Video"){
+                videoPath = e.target.parentNode.querySelector('video').src
+                return location.assign(videoPath)
+            }
+            else if(swither == 'Download Srt'){
+                videoPath = e.target.parentNode.querySelector('video').src
+                srtPath = videoPath.replace('/workshopFiles', '/srtFiles')
+                srtPath = srtPath.replace('.mp4', '.srt')
+                console.log(srtPath)
+                return location.assign(srtPath)
+            }
+        }
 
         async function upload(e){
             e.preventDefault();
             const userFile = document.getElementById('file').files[0];
             const formData = new FormData();
             formData.append('file_from_user', userFile)
-            const response = await fetch('http://3.230.0.70:5555/workshop/upload-video', fetchOptions(formData));
+            const response = await fetch('http://54.226.246.195:5555/workshop/upload-video', fetchOptions(formData));
             const result = await response.json()
             if(result.msg == 'Upload successfully')
                 return location.reload()
@@ -92,10 +131,10 @@
             if (e.target.className == 'merge-button')
                 return ;
             videoName = e.target.parentNode.querySelector('video').src
-            video_path = videoName.slice(34)
-            const response = await fetch('http://3.230.0.70:5555/workshop/add-subtitles', fetchOptions(JSON.stringify(video_path)));
+            video_path = videoName.slice(38)
+            const response = await fetch('http://54.226.246.195:5555/workshop/add-subtitles', fetchOptions(JSON.stringify(video_path)));
             const result = await response.json()
-            return window.location.href = `http://3.230.0.70:5555/workshop/edit-subtitles/${video_path}`;
+            return window.location.href = `http://54.226.246.195:5555/workshop/edit-subtitles/${video_path}`;
         }
 
         async function mergeSubtitle(e){
@@ -104,10 +143,10 @@
             if (e.target.className == 'add-button' | e.target.className == 'update-button')
                 return ;
             videoName = e.target.parentNode.querySelector('video').src
-            video_path = videoName.slice(34)
-            await fetch('http://3.230.0.70:5555/workshop/merge-subtitles', fetchOptions(JSON.stringify(video_path)));
+            video_path = videoName.slice(38)
+            await fetch('http://54.226.246.195:5555/workshop/merge-subtitles', fetchOptions(JSON.stringify(video_path)));
             // const result = await response.json()
-            return window.location.href = `http://3.230.0.70:5555/workshop`;
+            return window.location.href = `http://54.226.246.195:5555/workshop`;
             // return;
         }
 
@@ -117,16 +156,16 @@
             if (e.target.className == 'merge-button')
                 return ;
             videoName = e.target.parentNode.querySelector('video').src
-            video_path = videoName.slice(34)
-            // const response = await fetch('http://3.230.0.70:5555/workshop/update-subtitles', fetchOptions(JSON.stringify(video_path)));
+            video_path = videoName.slice(38)
+            // const response = await fetch('http://54.226.246.195:5555/workshop/update-subtitles', fetchOptions(JSON.stringify(video_path)));
             // const result = await response.json()
-            return window.location.href = `http://3.230.0.70:5555/workshop/edit-subtitles/${video_path}`;
+            return window.location.href = `http://54.226.246.195:5555/workshop/edit-subtitles/${video_path}`;
         }
 
         async function logout(e){
             e.preventDefault();
-            const response = await fetch('http://3.230.0.70:5555/logout', {method: "POST"});
-            return location.assign('http://3.230.0.70:5555')
+            const response = await fetch('http://54.226.246.195:5555/logout', {method: "POST"});
+            return location.assign('http://54.226.246.195:5555')
         }
 
         function getCookie(name) {

@@ -48,7 +48,7 @@ def loginPost():
         else:
             return jsonify(msg = 'No such user was found\n'), 200
     except:
-        return jsonify('Maybe you should refresh page')
+        return jsonify(msg = 'Due to using free tier of database, Maybe you should refresh page')
     
 @user.route("/logout", methods=["POST"])
 def logout_with_cookies():
